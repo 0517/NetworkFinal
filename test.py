@@ -111,7 +111,7 @@ def new_service():
                 connection.close()
 
 if __name__ == '__main__':
-    new_service
+    new_service()
 
 
 # coding=utf8
