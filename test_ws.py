@@ -124,7 +124,7 @@ def handshake(con):
     print str_handshake
     con.send(str_handshake)
 
-    # send("hello world", con)
+    send("hello world", con)
     # con.send("hello world")
 
     return True
