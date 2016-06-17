@@ -1,0 +1,6 @@
+<script>
+	var socket = new WebSocket("ws://127.0.0.1:3368")
+	socket.onmessage = function(result, nTime) {
+		console.log(result);
+	}
+</script>
