@@ -43,7 +43,7 @@ class Server(threading.Thread):
 
         super(Server, self).__init__()
         self.daemon = True
-        self.bufSize = 1024
+        self.bufSize = 100024
         self.controlSock = WebSocket(controlSock, self.bufSize)
         self.clientAddr = clientAddr
         self.dataListenSock = None
@@ -261,7 +261,7 @@ class Server(threading.Thread):
                     file_name = cmd.split()[1]
 
                     try:
-                        self.dataSock.send(open(file_name, 'rb').read())
+                        self.dataSock.send(open(file_name, 'rb').read(), opcode=2)
 
                     except Exception as e:
                         print e
@@ -289,13 +289,13 @@ class Server(threading.Thread):
                     # programDir = os.getcwd()
                     # os.chdir(self.cwd)
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
-                    file_name = open(cmd.split()[1], 'w')
+                    file_name = open(cmd.split()[1], 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
                     self.dataSock.setblocking(False)
                     while True:
                         try:
                             data = self.dataSock.recv(self.bufSize)
-                            print data
+                            # print data
                             if data == b'':
                                 break
                             if data is None:
