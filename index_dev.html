@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        <title>用户登陆</title>
+        <link href="css/login.css" rel="stylesheet" type="text/css">
+        <!-- 新 Bootstrap 核心 CSS 文件 -->
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <script src="js/jquery-1.9.1.js"></script>
+        <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+        <script src="js/bootstrap.js"></script>
+    </head>
+    <body>
+        <div class="login">
+            <div class="title">
+                <div class="jumbotron">
+                    <h1>Web FTP</h1>
+                    <!--<p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>-->
+                    <!--<p>To see the difference between static and fixed top navbars, just scroll.</p>-->
+                    <!--<p>-->
+                      <!--<a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs »</a>-->
+                    <!--</p>-->
+                </div>
+                <div class="main">
+                    <form role="form" action="" method="post">
+
+                        <div class="form-group has-error">
+
+                            <label for="exampleInputEmail1">Host</label>
+
+                            <div class="row">
+                                <div class="col-md-8"><input type="text" class="form-control name" id="ip" placeholder="ip address"></div>
+
+                                <div class="col-md-4"><input type="text" class="form-control name" id="port" placeholder="port"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Account</label>
+                            <input type="text" class="form-control name" id="exampleInputEmail1" placeholder="Account">
+                        </div>
+
+                        <div class="form-group has-error">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control ps" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="message">
+                            <p class="bg-danger">Wrong password</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg btn-block logi" onclick = "return false;">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
