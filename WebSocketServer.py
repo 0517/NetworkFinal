@@ -56,6 +56,7 @@ class Server(threading.Thread):
         self.typeMode = 'Binary'
         self.dataMode = 'PORT'
 
+
     def run(self):
 
         self.controlSock.send(b'220 Service ready for new user.\r\n')
@@ -321,7 +322,14 @@ if __name__ == '__main__':
     listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listenSock.bind((listenAddr, listenPort))
     listenSock.listen(5)
+    f = open("ip_list.txt", 'r')
+    ip_list = f.read().split("\n")
+    f.close()
 
     while True:
         controlSock, clientAddr = listenSock.accept()
+        for i in ip_list:
+            if clientAddr[0] == i:
+                controlSock.send('421 Service not available, closing control connection')
+                controlSock.close()
         Server(controlSock, clientAddr).start()
