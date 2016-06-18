@@ -176,7 +176,7 @@ def get_datalength(msg):
 def parse_data(msg):
     global g_code_length
     g_code_length = ord(msg[1]) & 127
-    received_length = 0
+
     if g_code_length == 126:
         g_code_length = struct.unpack('>H', str(msg[2:4]))[0]
         masks = msg[4:8]
@@ -188,16 +188,12 @@ def parse_data(msg):
     else:
         masks = msg[2:6]
         data = msg[6:]
-
-
     i = 0
     raw_str = ''
-
 
     for d in data:
         raw_str += chr(ord(d) ^ ord(masks[i%4]))
         i += 1
-
 
     # print (u"总长度是：%d" % int(g_code_length))
     return raw_str
@@ -339,6 +335,15 @@ def handle(s):
     s.close()
 
 
+def testwsme(s):
+    from websocket import WebSocket
+    ws = WebSocket(s, 1024)
+    ws.send("Hello world")
+    while True:
+        recvd = ws.recv()
+        print "receive", recvd
+        ws.send(recvd)
+
 def start():
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -346,7 +351,7 @@ def start():
     s.listen(1)
     while 1:
         t, _ = s.accept()
-        threading.Thread(target=handshake, args=(t,)).start()
+        threading.Thread(target=testwsme, args=(t,)).start()
 
 if __name__ == '__main__':
     # new_service()

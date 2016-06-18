@@ -4,6 +4,7 @@ import socket
 import os
 import threading
 import time
+from websocket import WebSocket
 
 __author__ = 'qm'
 
@@ -21,6 +22,7 @@ class DataSocket(threading.Thread):
         while True:
             try:
                 data_sock, client_addr = self.listenSock.accept()
+                data_sock = WebSocket(data_sock)
                 print 'receive data socket from', client_addr
             except socket.timeout:
                 pass
@@ -44,7 +46,7 @@ class Server(threading.Thread):
         super(Server, self).__init__()
         self.daemon = True
         self.bufSize = 1024
-        self.controlSock = controlSock
+        self.controlSock = WebSocket(controlSock, self.bufSize)
         self.clientAddr = clientAddr
         self.dataListenSock = None
         self.dataSock = None
