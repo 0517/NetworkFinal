@@ -3,69 +3,72 @@
 <meta charset="utf-8" />
 
 <title>WebSocket Test</title>
+<script src="js/jquery-1.9.1.js" type="text/javascript"></script>
+<script src="js/testws.js" type="text/javascript"></script>
 
-<script language="javascript" type="text/javascript">
 
-    function init() {
-        document.myform.url.value = "ws://localhost:9876/";
-        document.myform.inputtext.value = "Hello World!";
-        document.myform.disconnectButton.disabled = true;
-    }
+<!--<script language="javascript" type="text/javascript">-->
 
-    function doConnect() {
-        websocket = new WebSocket(document.myform.url.value);
-        websocket.onopen = function(evt) { onOpen(evt) };
-        websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
-        websocket.onerror = function(evt) { onError(evt) };
-    }
+    <!--function init() {-->
+        <!--document.myform.url.value = "ws://localhost:9876/";-->
+        <!--document.myform.inputtext.value = "Hello World!";-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    function onOpen(evt) {
-        writeToScreen("connected\n");
-        document.myform.connectButton.disabled = true;
-        document.myform.disconnectButton.disabled = false;
-    }
+    <!--function doConnect() {-->
+        <!--websocket = new WebSocket(document.myform.url.value);-->
+        <!--websocket.onopen = function(evt) { onOpen(evt) };-->
+        <!--websocket.onclose = function(evt) { onClose(evt) };-->
+        <!--websocket.onmessage = function(evt) { onMessage(evt) };-->
+        <!--websocket.onerror = function(evt) { onError(evt) };-->
+    <!--}-->
 
-    function onClose(evt) {
-        writeToScreen("disconnected\n");
-        document.myform.connectButton.disabled = false;
-        document.myform.disconnectButton.disabled = true;
-    }
+    <!--function onOpen(evt) {-->
+        <!--writeToScreen("connected\n");-->
+        <!--document.myform.connectButton.disabled = true;-->
+        <!--document.myform.disconnectButton.disabled = false;-->
+    <!--}-->
 
-    function onMessage(evt) {
-        writeToScreen("response: " + evt.data + '\n');
-    }
+    <!--function onClose(evt) {-->
+        <!--writeToScreen("disconnected\n");-->
+        <!--document.myform.connectButton.disabled = false;-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    function onError(evt) {
-        writeToScreen('error: ' + evt.data + '\n');
-        websocket.close();
-        document.myform.connectButton.disabled = false;
-        document.myform.disconnectButton.disabled = true;
-    }
+    <!--function onMessage(evt) {-->
+        <!--writeToScreen("response: " + evt.data + '\n');-->
+    <!--}-->
 
-    function doSend(message) {
-    writeToScreen("sent: " + message + '\n');
-    websocket.send(message);
-    }
+    <!--function onError(evt) {-->
+        <!--writeToScreen('error: ' + evt.data + '\n');-->
+        <!--websocket.close();-->
+        <!--document.myform.connectButton.disabled = false;-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    function writeToScreen(message) {
-        document.myform.outputtext.value += message
-        document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
-    }
+    <!--function doSend(message) {-->
+    <!--writeToScreen("sent: " + message + '\n');-->
+    <!--websocket.send(message);-->
+    <!--}-->
 
-    window.addEventListener("load", init, false);
-    function sendText() {
-        doSend( document.myform.inputtext.value );
-    }
+    <!--function writeToScreen(message) {-->
+        <!--document.myform.outputtext.value += message-->
+        <!--document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;-->
+    <!--}-->
 
-    function clearText() {
-        document.myform.outputtext.value = "";
-    }
+    <!--window.addEventListener("load", init, false);-->
+    <!--function sendText() {-->
+        <!--doSend( document.myform.inputtext.value );-->
+    <!--}-->
 
-    function doDisconnect() {
-        websocket.close();
-    }
-</script>
+    <!--function clearText() {-->
+        <!--document.myform.outputtext.value = "";-->
+    <!--}-->
+
+    <!--function doDisconnect() {-->
+        <!--websocket.close();-->
+    <!--}-->
+<!--</script>-->
 
 <div id="output"></div>
 
