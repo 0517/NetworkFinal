@@ -3,69 +3,91 @@
 <meta charset="utf-8" />
 
 <title>WebSocket Test</title>
+<script src="js/jquery-1.9.1.js" type="text/javascript"></script>
+<script src="js/Blob.js" type="text/javascript"></script>
+<script src="js/FileSaver.js" type="text/javascript"></script>
+<script src="js/testws.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
-
-    function init() {
-        document.myform.url.value = "ws://localhost:9876/";
-        document.myform.inputtext.value = "Hello World!";
-        document.myform.disconnectButton.disabled = true;
+  function  handleFiles(files)
+  {
+    if(files.length)
+    {
+       var file = files[0];
+       reader = new FileReader();
+       reader.onload = function()
+       {
+           document.getElementById("file").innerHTML = this.result;
+       };
+//       reader.readAsText(file);
+//        reader.readAsText(file, "utf-8");
+        reader.readAsArrayBuffer(file);
     }
+  }
+  </script>
 
-    function doConnect() {
-        websocket = new WebSocket(document.myform.url.value);
-        websocket.onopen = function(evt) { onOpen(evt) };
-        websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
-        websocket.onerror = function(evt) { onError(evt) };
-    }
+<!--<script language="javascript" type="text/javascript">-->
 
-    function onOpen(evt) {
-        writeToScreen("connected\n");
-        document.myform.connectButton.disabled = true;
-        document.myform.disconnectButton.disabled = false;
-    }
+    <!--function init() {-->
+        <!--document.myform.url.value = "ws://localhost:9876/";-->
+        <!--document.myform.inputtext.value = "Hello World!";-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    function onClose(evt) {
-        writeToScreen("disconnected\n");
-        document.myform.connectButton.disabled = false;
-        document.myform.disconnectButton.disabled = true;
-    }
+    <!--function doConnect() {-->
+        <!--websocket = new WebSocket(document.myform.url.value);-->
+        <!--websocket.onopen = function(evt) { onOpen(evt) };-->
+        <!--websocket.onclose = function(evt) { onClose(evt) };-->
+        <!--websocket.onmessage = function(evt) { onMessage(evt) };-->
+        <!--websocket.onerror = function(evt) { onError(evt) };-->
+    <!--}-->
 
-    function onMessage(evt) {
-        writeToScreen("response: " + evt.data + '\n');
-    }
+    <!--function onOpen(evt) {-->
+        <!--writeToScreen("connected\n");-->
+        <!--document.myform.connectButton.disabled = true;-->
+        <!--document.myform.disconnectButton.disabled = false;-->
+    <!--}-->
 
-    function onError(evt) {
-        writeToScreen('error: ' + evt.data + '\n');
-        websocket.close();
-        document.myform.connectButton.disabled = false;
-        document.myform.disconnectButton.disabled = true;
-    }
+    <!--function onClose(evt) {-->
+        <!--writeToScreen("disconnected\n");-->
+        <!--document.myform.connectButton.disabled = false;-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    function doSend(message) {
-    writeToScreen("sent: " + message + '\n');
-    websocket.send(message);
-    }
+    <!--function onMessage(evt) {-->
+        <!--writeToScreen("response: " + evt.data + '\n');-->
+    <!--}-->
 
-    function writeToScreen(message) {
-        document.myform.outputtext.value += message
-        document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;
-    }
+    <!--function onError(evt) {-->
+        <!--writeToScreen('error: ' + evt.data + '\n');-->
+        <!--websocket.close();-->
+        <!--document.myform.connectButton.disabled = false;-->
+        <!--document.myform.disconnectButton.disabled = true;-->
+    <!--}-->
 
-    window.addEventListener("load", init, false);
-    function sendText() {
-        doSend( document.myform.inputtext.value );
-    }
+    <!--function doSend(message) {-->
+    <!--writeToScreen("sent: " + message + '\n');-->
+    <!--websocket.send(message);-->
+    <!--}-->
 
-    function clearText() {
-        document.myform.outputtext.value = "";
-    }
+    <!--function writeToScreen(message) {-->
+        <!--document.myform.outputtext.value += message-->
+        <!--document.myform.outputtext.scrollTop = document.myform.outputtext.scrollHeight;-->
+    <!--}-->
 
-    function doDisconnect() {
-        websocket.close();
-    }
-</script>
+    <!--window.addEventListener("load", init, false);-->
+    <!--function sendText() {-->
+        <!--doSend( document.myform.inputtext.value );-->
+    <!--}-->
+
+    <!--function clearText() {-->
+        <!--document.myform.outputtext.value = "";-->
+    <!--}-->
+
+    <!--function doDisconnect() {-->
+        <!--websocket.close();-->
+    <!--}-->
+<!--</script>-->
 
 <div id="output"></div>
 
@@ -85,6 +107,14 @@
 <input type="button" name=disconnectButton value="Disconnect" onClick="doDisconnect();">
 <input type="button" name=connectButton value="Connect" onClick="doConnect();">
 </p>
+    <p>
+        <input type="button" value="login" onClick="login('123', '123');"/>
+        <input type="button" value="pasv"  onClick="pasv();">
+    </p>
+    <p>
+        <input type="file" id="file" onchange="handleFiles(this.files)"/>
+        <input type="button" name=sendButton value="Send" onClick="sendFile();">
+    </p>
 
 
 </form>

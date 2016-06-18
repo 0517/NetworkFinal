@@ -217,11 +217,7 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
-<<<<<<< HEAD
 
-                    self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
-
-=======
                     self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
             elif cmdHead == 'PORT':
@@ -229,7 +225,6 @@ class Server(threading.Thread):
                     self.controlSock.send(b'530 Not logged in.\r\n')
                 else:
                     self.controlSock.send("502 Command not implemented\r\n")
->>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
 
             elif cmdHead == 'NLST':
 
@@ -243,10 +238,7 @@ class Server(threading.Thread):
                     directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
                     self.dataSock.send(directory)
                     self.dataSock.close()
-<<<<<<< HEAD
-                    # self.dataSock = None
-=======
->>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
+
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
