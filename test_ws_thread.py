@@ -42,7 +42,7 @@ class SocketIoThread(Thread):
                     response += '''Sec-WebSocket-Accept: %s\r\n'''%(resKey,)
                     self.con.send(response)
                     self.isHandleShake = True
-                    #返回用户id
+                    # 返回用户id
                     self.sendData("SETUID")
                     self.io.onConnect(self.uid)
                     print "握手成功"
@@ -64,7 +64,6 @@ class SocketIoThread(Thread):
                         print "客户端断开链接"
                         self.onClose()
                         return
-
 
                     data_length = self.con.recv(1)
                     data_lengths= struct.unpack("B",data_length)
@@ -124,11 +123,11 @@ class SocketIoThread(Thread):
 
         text = self.packData(text)
         print text
-        #头
+        # 头
         self.con.send(struct.pack("!B",0x81))
-        #计算长度
+        # 计算长度
         length = len(text)
-       # masking = 0b00000000;
+        # masking = 0b00000000;
 
         if length<=125:
             self.con.send(struct.pack("!B",length))
