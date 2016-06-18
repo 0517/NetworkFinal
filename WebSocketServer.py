@@ -23,6 +23,7 @@ class DataSocket(threading.Thread):
             try:
                 data_sock, client_addr = self.listenSock.accept()
                 data_sock = WebSocket(data_sock)
+                data_sock.isData = True
                 print 'receive data socket from', client_addr
             except socket.timeout:
                 pass
@@ -71,6 +72,7 @@ class Server(threading.Thread):
                 break
 
             cmdHead = cmd.split()[0].upper()
+            print 'receive head', cmdHead
             if cmdHead == 'QUIT':
                 self.controlSock.send(b'221 Service closing control connection.\r\n')
                 self.controlSock.close()
@@ -160,7 +162,9 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
-                        self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
+
+                    self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
+
 
             elif cmdHead == 'NLST':
 
@@ -173,7 +177,8 @@ class Server(threading.Thread):
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
                     directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
                     self.dataSock.send(directory)
-                    self.dataSock = None
+                    self.dataSock.close()
+                    # self.dataSock = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
@@ -230,8 +235,11 @@ class Server(threading.Thread):
                     while True:
                         try:
                             data = self.dataSock.recv(self.bufSize)
+                            print data
                             if data == b'':
                                 break
+                            if data is None:
+                                continue
                             file_name.write(data)
                         except socket.error:
                             break
