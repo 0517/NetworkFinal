@@ -87,7 +87,7 @@ class WebSocket():
             return
         if self.g_code_length == 0:
             self.get_datalength(mm)
-        #接受的长度
+        # 接受的长度
 
         length_buffer += len(mm)
 
