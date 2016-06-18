@@ -158,7 +158,8 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
-                        self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
+
+                    self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
             elif cmdHead == 'NLST':
 
@@ -171,7 +172,8 @@ class Server(threading.Thread):
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
                     directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
                     self.dataSock.send(directory)
-                    self.dataSock = None
+                    self.dataSock.close()
+                    # self.dataSock = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
@@ -246,7 +248,7 @@ class Server(threading.Thread):
 if __name__ == '__main__':
 
     listenAddr = "127.0.0.1"
-    listenPort = 12344
+    listenPort = 12345
     listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
     listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listenSock.bind((listenAddr, listenPort))

@@ -93,15 +93,18 @@ class FTPClient():
         dataSock.connect((self.dataAddr, int(self.dataPort)))
         self.controlSock.send(b'NLST\r\n')
         time.sleep(0.5) # Wait for connection to set up
-        dataSock.setblocking(False) # Set to non-blocking to detect connection close
+        # dataSock.setblocking(False) # Set to non-blocking to detect connection close
         while True:
             try:
                 data = dataSock.recv(self.bufSize)
-                if len(data) == 0: # Connection close
+                print "recv data:", data
+                if len(data) == 0:
+                    # Connection close
                     print 'no data'
                     break
                 print(data.decode('ascii').strip())
-            except (socket.error): # Connection closed
+            except Exception as e: # Connection closed
+                print e
                 break
         dataSock.close()
         self.parseReply()
@@ -135,13 +138,18 @@ class FTPClient():
         dataSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
         dataSock.connect((self.dataAddr, int(self.dataPort)))
         self.controlSock.send(('STOR %s\r\n' % filename).encode('ascii'))
-        dataSock.send(open(filename, 'rb').read())
+        dataSock.send(open("test.py", 'rb').read())
+        # dataSock.send("11111")
         dataSock.close()
         self.parseReply()
 
 cl = FTPClient()
-cl.connect('127.0.0.1', 12344)
+cl.connect('127.0.0.1', 12345)
 cl.login('wsh', '123')
 cl.pasv()
 cl.nlst()
-cl.stor('client.py')
+cl.pasv()
+cl.cwd("test")
+cl.stor("hhh.py")
+# cl.pasv()
+# cl.retr('hhh.py')

@@ -149,8 +149,6 @@ class Server(threading.Thread):
                     self.controlSock.send(b'530 Not logged in.\r\n')
 
                 else:
-                    # if self.dataListenSock is not None:
-                    # self.dataListenSock.close()
                     if self.dataListenSock is None:
                         self.dataListenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         self.dataListenSock.bind((self.dataAddr, 0))
