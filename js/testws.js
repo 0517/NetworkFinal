@@ -9,7 +9,7 @@ $(document).ready(function(){
 });
 
 re = /\((\w*.+)/;
-
+isNlst = false;
 
 function init() {
     //document.myform.url.value = "ws://localhost:9876/";
@@ -31,7 +31,7 @@ function dataConnect(ip, port) {
     socket = new WebSocket(url);
     socket.onopen = function(evt) { onOpen(evt) };
     socket.onclose = function(evt) { onClose(evt) };
-    socket.onmessage = function(evt) { onMessage(evt) };
+    socket.onmessage = function(evt) { onDataMessage(evt) };
     socket.onerror = function(evt) { onError(evt) };
 }
 
@@ -48,7 +48,7 @@ function onClose(evt) {
 }
 
 function onMessage(evt) {
-    console.log(evt.data);
+    console.log(evt);
     if (evt.data.substring(0, 3) == '227') {
         host = re.exec(evt.data)[1].split(')')[0];
         ip = host.split(',')[0];
@@ -59,10 +59,16 @@ function onMessage(evt) {
 }
 
 function onDataMessage(evt) {
-    console.log(evt.data);
+    console.log("Image");
+    console.log(evt);
     //writeToScreen("response: " + evt.data + '\n');
-    blob = evt.data;
-    saveAs(blob, "test.jpg");
+    if (!isNlst) {
+        blob = evt.data;
+        saveAs(blob, "test.jpg");
+    } else {
+        isNlst = false;
+        writeToScreen("response: " + evt.data + '\n')
+    }
     socket.close();
 }
 
@@ -93,8 +99,11 @@ function sendText() {
 function sendFile() {
     websocket.send('STOR testsend.jpg');
     resultfile = reader.result;
-    console.log(resultfile);
-    socket.send(resultfile);
+    //res = new Blob([resultfile]);
+    res = resultfile;
+    console.log(res);
+    socket.binaryType = "arraybuffer";
+    socket.send(res, opcode=0x2);
 }
 
 function clearText() {
@@ -115,6 +124,11 @@ function pasv() {
 }
 
 function nlst() {
+    isNlst = true;
     doSend('NLST\r\n');
+}
+
+function retr() {
+    doSend('RETR test.jpg\r\n');
 }
 

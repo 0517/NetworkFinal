@@ -14,7 +14,6 @@ HANDSHAKE_STRING = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" \
       "Sec-WebSocket-Accept: {1}\r\n" \
       "WebSocket-Location: ws://{2}/\r\n" \
       "WebSocket-Protocol:sample\r\n\r\n"
-f = open("test.jpg", "wb+")
 
 
 class WebSocket():
@@ -27,15 +26,20 @@ class WebSocket():
         self.g_header_length = 0
         self.handshake()
         self.isData = False
+        self.opCode = 1
 
-    def send(self, data):
+    def send(self, data, opcode=1):
 
         if data:
             data = str(data)
         else:
             return False
 
-        token = "\x81"
+        if opcode == 1:
+            token = "\x81"
+        else:
+            token = "\x82"
+
         length = len(data)
 
         if length < 126:
@@ -95,16 +99,18 @@ class WebSocket():
         length_buffer += len(mm)
 
         buffer = buffer + mm
-        if length_buffer - self.g_header_length < self.g_code_length:
+        # if length_buffer - self.g_header_length < self.g_code_length:
+        if False:
             return
         else:
             buffer_utf8 = self.parse_data(buffer)  # utf8
-            print buffer_utf8
-            if not self.isData:
+
+            if self.opCode == 1:
                 msg_unicode = str(buffer_utf8).decode('utf-8', 'ignore')  # unicode
             else:
                 msg_unicode = bytes(buffer_utf8)
-                f.write(msg_unicode)
+
+            # print msg_unicode, "msg"
             self.g_code_length = 0
             return msg_unicode
 
@@ -127,6 +133,13 @@ class WebSocket():
         return self.g_code_length
 
     def parse_data(self, msg):
+        # if self.isData:
+        #     print "data socket"
+        #     for m in msg:
+        #         print ord(m),
+        #     print "data socket"
+        if ord(msg[0]) == 130:
+            self.opCode = 2
 
         self.g_code_length = ord(msg[1]) & 127
 
@@ -148,11 +161,11 @@ class WebSocket():
         raw_str = ''
 
         for d in data:
-            if not self.isData:
-                raw_str += chr(ord(d) ^ ord(masks[i % 4]))
-            else:
-                print d
-                raw_str += bin(d) ^ bin(masks[i % 4])
+            # if True:
+            #     raw_str += chr(ord(d) ^ ord(masks[i % 4]))
+            #     # print raw_str
+            # else:
+            raw_str += chr(ord(d) ^ ord(masks[i % 4]))
             i += 1
 
         print (u"总长度是：%d" % int(self.g_code_length))

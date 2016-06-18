@@ -23,8 +23,10 @@
 //       reader.readAsText(file);
 //        reader.readAsText(file, "utf-8");
         reader.readAsArrayBuffer(file);
-        console.log(reader.result);
-//        var base64 = BASE64.encoder(reader.result);
+
+//        console.log(reader.result.toString());
+//        base64 = BASE64.encoder(reader.result.toString());
+
 //        console.log(base64);
 
     }
@@ -115,6 +117,8 @@
     <p>
         <input type="button" value="login" onClick="login('123', '123');"/>
         <input type="button" value="pasv"  onClick="pasv();">
+        <input type="button" value="nlst"  onClick="nlst();">
+        <input type="button" value="retr"  onClick="retr();">
     </p>
     <p>
         <input type="file" id="file" onchange="handleFiles(this.files)"/>

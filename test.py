@@ -111,7 +111,9 @@ def new_service():
                 connection.close()
 
 if __name__ == '__main__':
-    new_service()
+    # new_service()
+    f = open('testsend.jpg', 'rb').read()
+    print type(f)
 
 
 # coding=utf8
