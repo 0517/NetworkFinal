@@ -93,8 +93,9 @@ function sendText() {
 function sendFile() {
     websocket.send('STOR testsend.jpg');
     resultfile = reader.result;
-    console.log(resultfile);
-    socket.send(resultfile);
+    res = new Blob([resultfile]);
+    console.log(res);
+    socket.send(res);
 }
 
 function clearText() {

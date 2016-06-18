@@ -29,7 +29,7 @@ class WebSocket():
 
     def send(self, data):
 
-        if data:
+        if data and not self.isData:
             data = str(data)
         else:
             return False
@@ -151,7 +151,7 @@ class WebSocket():
                 raw_str += chr(ord(d) ^ ord(masks[i % 4]))
             else:
                 print d
-                raw_str += bin(d) ^ bin(masks[i % 4])
+                raw_str += ord(d) ^ ord(masks[i % 4])
             i += 1
 
         print (u"总长度是：%d" % int(self.g_code_length))
