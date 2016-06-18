@@ -14,7 +14,7 @@ HANDSHAKE_STRING = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" \
       "Sec-WebSocket-Accept: {1}\r\n" \
       "WebSocket-Location: ws://{2}/\r\n" \
       "WebSocket-Protocol:sample\r\n\r\n"
-
+f = open("test.jpg", "wb+")
 
 class WebSocket():
 
@@ -25,6 +25,7 @@ class WebSocket():
         self.g_code_length = 0
         self.g_header_length = 0
         self.handshake()
+        self.isData = False
 
     def send(self, data):
 
@@ -78,17 +79,18 @@ class WebSocket():
 
         return True
 
-    def recv(self):
+    def recv(self, buffer_size=1024):
+
         length_buffer = 0
         buffer = ""
         buffer_utf8 = ""
-        mm = self.socket.recv(128)
+        mm = self.socket.recv(buffer_size)
+
         if len(mm) <= 0:
             return
         if self.g_code_length == 0:
             self.get_datalength(mm)
         # 接受的长度
-
         length_buffer += len(mm)
 
         buffer = buffer + mm
@@ -96,8 +98,12 @@ class WebSocket():
             return
         else:
             buffer_utf8 = self.parse_data(buffer)  # utf8
-            msg_unicode = str(buffer_utf8).decode('utf-8', 'ignore')  # unicode
-
+            print buffer_utf8
+            if not self.isData:
+                msg_unicode = str(buffer_utf8).decode('utf-8', 'ignore')  # unicode
+            else:
+                msg_unicode = bytes(buffer_utf8)
+                f.write(msg_unicode)
             self.g_code_length = 0
             return msg_unicode
 
@@ -141,10 +147,14 @@ class WebSocket():
         raw_str = ''
 
         for d in data:
-            raw_str += chr(ord(d) ^ ord(masks[i % 4]))
+            if not self.isData:
+                raw_str += chr(ord(d) ^ ord(masks[i % 4]))
+            else:
+                print d
+                raw_str += bin(d) ^ bin(masks[i % 4])
             i += 1
 
-        # print (u"总长度是：%d" % int(g_code_length))
+        print (u"总长度是：%d" % int(self.g_code_length))
         return raw_str
 
     def close(self):

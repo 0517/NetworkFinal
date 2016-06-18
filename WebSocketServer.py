@@ -23,6 +23,7 @@ class DataSocket(threading.Thread):
             try:
                 data_sock, client_addr = self.listenSock.accept()
                 data_sock = WebSocket(data_sock)
+                data_sock.isData = True
                 print 'receive data socket from', client_addr
             except socket.timeout:
                 pass
@@ -68,6 +69,7 @@ class Server(threading.Thread):
                 break
 
             cmdHead = cmd.split()[0].upper()
+            print 'receive head', cmdHead
             if cmdHead == 'QUIT':
                 self.controlSock.send(b'221 Service closing control connection.\r\n')
                 self.controlSock.close()
@@ -204,6 +206,8 @@ class Server(threading.Thread):
                     self.controlSock.send(b'530 Not logged in.\r\n')
 
                 else:
+                    # if self.dataListenSock is not None:
+                    # self.dataListenSock.close()
                     if self.dataListenSock is None:
                         self.dataListenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         self.dataListenSock.bind((self.dataAddr, 0))
@@ -213,6 +217,11 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
+<<<<<<< HEAD
+
+                    self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
+
+=======
                     self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
             elif cmdHead == 'PORT':
@@ -220,6 +229,7 @@ class Server(threading.Thread):
                     self.controlSock.send(b'530 Not logged in.\r\n')
                 else:
                     self.controlSock.send("502 Command not implemented\r\n")
+>>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
 
             elif cmdHead == 'NLST':
 
@@ -233,6 +243,10 @@ class Server(threading.Thread):
                     directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
                     self.dataSock.send(directory)
                     self.dataSock.close()
+<<<<<<< HEAD
+                    # self.dataSock = None
+=======
+>>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
@@ -289,8 +303,11 @@ class Server(threading.Thread):
                     while True:
                         try:
                             data = self.dataSock.recv(self.bufSize)
+                            print data
                             if data == b'':
                                 break
+                            if data is None:
+                                continue
                             file_name.write(data)
                         except socket.error:
                             break
