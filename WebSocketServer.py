@@ -5,6 +5,7 @@ import os
 import threading
 import time
 from websocket import WebSocket
+import shutil
 
 __author__ = 'qm'
 
@@ -18,7 +19,6 @@ class DataSocket(threading.Thread):
         self.listenSock = server.dataListenSock
 
     def run(self):
-        # self.listenSock.settimeout(3)
         while True:
             try:
                 data_sock, client_addr = self.listenSock.accept()
@@ -33,11 +33,8 @@ class DataSocket(threading.Thread):
                 if self.server.dataSock is not None:
                     self.server.dataSock.close()
                     self.server.dataSock = data_sock
-                    # print 1
                 else:
                     self.server.dataSock = data_sock
-                    # print data_sock
-                    # print 2
 
 
 class Server(threading.Thread):
@@ -112,6 +109,69 @@ class Server(threading.Thread):
                 else:
                     self.controlSock.send('257 "%s" is the current directory.\r\n' % self.cwd)
 
+            elif cmdHead == 'CDUP':
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+
+                else:
+                    try:
+                        os.chdir("..")
+                    except OSError as e:
+                        print e
+                        self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
+                    else:
+                        self.cwd = os.getcwd()
+                        self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
+
+            elif cmdHead == 'RMD':
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+
+                elif len(cmd.split()) < 2:
+                    self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
+                else:
+                    rm_dir = cmd.split()[1]
+                    try:
+                        shutil.rmtree(rm_dir)
+                    except Exception as e:
+                        print e
+                        self.controlSock.send('550 Requested action not taken.')
+                    else:
+                        self.controlSock.send('250 Requested file action okay, completed.')
+
+            elif cmdHead == 'MKD':
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+
+                elif len(cmd.split()) < 2:
+                    self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
+                else:
+                    new_dir = cmd.split()[1]
+                    try:
+                        os.mkdir(new_dir)
+                    except Exception as e:
+                        print e
+                        self.controlSock.send('550 Requested action not taken.')
+                    else:
+                        self.controlSock.send('250 Requested file action okay, completed.')
+
+            elif cmdHead == 'DELETE':
+
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+
+                elif len(cmd.split()) < 2:
+                    self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
+                else:
+                    delete_dir = cmd.split()[1]
+                    try:
+                        os.mkdir(delete_dir)
+                    except Exception as e:
+                        print e
+                        self.controlSock.send('550 Requested action not taken.')
+                    else:
+                        self.controlSock.send('250 Requested file action okay, completed.')
+
             elif cmdHead == 'CWD':
 
                 if not self.authenticated:
@@ -122,11 +182,10 @@ class Server(threading.Thread):
 
                 else:
 
-                    # programDir = os.getcwd()
                     os.chdir(self.cwd)
-                    nextDir = cmd.split()[1]
+                    next_dir = cmd.split()[1]
                     try:
-                        os.chdir(nextDir)
+                        os.chdir(next_dir)
                     except OSError as e:
                         print e
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
@@ -134,16 +193,12 @@ class Server(threading.Thread):
                         self.cwd = os.getcwd()
                         self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
 
-                    # os.chdir(programDir) 为什么要再变回去???
-            # elif cmd == 'TYPE':
-            #     if not self.authenticated:
-            #         self.controlSock.send(b'530 Not logged in.\r\n')
-            #     elif len(cmd.split() < 2):
-            #         self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
-            #     elif cmd.split()[1] == 'I':
-            #         self.typeMode = 'Binary'
-            #     else:
-            #         self.controlSock.send(b'504 Command not implemented for that parameter.\r\n')
+            elif cmd == 'TYPE':
+
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+                else:
+                    self.controlSock.send("502 Command not implemented\r\n")
 
             elif cmdHead == 'PASV':
 
@@ -162,9 +217,19 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
+<<<<<<< HEAD
 
                     self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
+=======
+                    self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
+
+            elif cmdHead == 'PORT':
+                if not self.authenticated:
+                    self.controlSock.send(b'530 Not logged in.\r\n')
+                else:
+                    self.controlSock.send("502 Command not implemented\r\n")
+>>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
 
             elif cmdHead == 'NLST':
 
@@ -178,7 +243,10 @@ class Server(threading.Thread):
                     directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
                     self.dataSock.send(directory)
                     self.dataSock.close()
+<<<<<<< HEAD
                     # self.dataSock = None
+=======
+>>>>>>> 7c4544cd8fd12811241e9efb1eb1ba941022d394
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:

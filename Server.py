@@ -4,6 +4,7 @@ import socket
 import os
 import threading
 import time
+import shutil
 
 __author__ = 'qm'
 
