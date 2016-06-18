@@ -16,6 +16,7 @@ HANDSHAKE_STRING = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" \
       "WebSocket-Protocol:sample\r\n\r\n"
 f = open("test.jpg", "wb+")
 
+
 class WebSocket():
 
     def __init__(self, socket, buffer_size=1024):
