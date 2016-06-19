@@ -238,7 +238,7 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
-                elif cmd.split()[1] != 'NLST' or cmd.split()[1] != 'RETR' or cmd.split()[1] != 'STOR':
+                elif cmd.split()[1] != 'NLST' and cmd.split()[1] != 'RETR' and cmd.split()[1] != 'STOR':
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                 else:
