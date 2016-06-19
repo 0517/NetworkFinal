@@ -1,5 +1,6 @@
 import sys, socket, os, re, time
 
+
 class FTPClient():
     def __init__(self):
         self.controlSock = None
@@ -11,11 +12,12 @@ class FTPClient():
         self.dataPort = None
 
     def parseReply(self):
-        if self.controlSock == None:
+
+        if self.controlSock is None:
             return
         try:
             reply = self.controlSock.recv(self.bufSize).decode('ascii')
-        except (socket.timeout):
+        except (socket. timeout):
             return
         else:
             if 0 < len(reply):
