@@ -16,7 +16,7 @@ HANDSHAKE_STRING = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" \
       "WebSocket-Protocol:sample\r\n\r\n"
 
 
-class WebSocket():
+class WebSocket:
 
     def __init__(self, socket, buffer_size=1024):
         self.socket = socket

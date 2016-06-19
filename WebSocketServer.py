@@ -24,32 +24,56 @@ class DataSocket(threading.Thread):
         while True:
             try:
                 data_sock, client_addr = self.listenSock.accept()
-                data_sock = WebSocket(data_sock)
-                data_sock.isData = True
+                if not self.server.ifPrimitive:
+                    data_sock = WebSocket(data_sock)
+                    data_sock.isData = True
                 print 'receive data socket from', client_addr
             except socket.timeout:
                 pass
             except socket.error:
                 break
             else:
-                if self.server.dataSock is not None:
-                    self.server.dataSock.close()
-                    self.server.dataSock = data_sock
+                if self.server.data_socket_for == 'NLST':
+                    if self.server.nlst_data_socket is not None:
+                        self.server.nlst_data_socket.close()
+                        self.server.nlst_data_socket = data_sock
+                    else:
+                        self.server.nlst_data_socket = data_sock
+                elif self.server.data_socket_for == 'RETR':
+                    if self.server.retr_data_socket is not None:
+                        self.server.retr_data_socket.close()
+                        self.server.retr_data_socket = data_sock
+                    else:
+                        self.server.retr_data_socket = data_sock
                 else:
-                    self.server.dataSock = data_sock
+                    if self.server.stor_data_socket is not None:
+                        self.server.stor_data_socket.close()
+                        self.server.stor_data_socket = data_sock
+                    else:
+                        self.server.stor_data_socket = data_sock
+
+                # if self.server.dataSock is not None:
+                #     self.server.dataSock.close()
+                #     self.server.dataSock = data_sock
+                # else:
+                #     self.server.dataSock = data_sock
 
 
 class Server(threading.Thread):
 
-    def __init__(self, controlSock, clientAddr):
+    def __init__(self, controlSock, clientAddr, ifPrimitive):
 
         super(Server, self).__init__()
         self.daemon = True
         self.bufSize = 100024
-        self.controlSock = WebSocket(controlSock, self.bufSize)
+        self.ifPrimitive = ifPrimitive
+        if ifPrimitive:
+            self.controlSock = controlSock
+        else:
+            self.controlSock = WebSocket(controlSock, self.bufSize)
         self.clientAddr = clientAddr
         self.dataListenSock = None
-        self.dataSock = None
+        # self.dataSock = None
         self.dataAddr = '127.0.0.1'
         self.dataPort = None
         self.username = ''
@@ -57,6 +81,10 @@ class Server(threading.Thread):
         self.cwd = os.getcwd()
         self.typeMode = 'Binary'
         self.dataMode = 'PORT'
+        self.nlst_data_socket = None
+        self.retr_data_socket = None
+        self.stor_data_socket = None
+        self.data_socket_for = 'NLST'
 
     def run(self):
 
@@ -207,6 +235,12 @@ class Server(threading.Thread):
                 if not self.authenticated:
                     self.controlSock.send(b'530 Not logged in.\r\n')
 
+                elif len(cmd.split()) < 2:
+                    self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
+
+                elif cmd.split()[1] != 'NLST' or cmd.split()[1] != 'RETR' or cmd.split()[1] != 'STOR':
+                    self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
+
                 else:
                     if self.dataListenSock is None:
                         self.dataListenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -217,7 +251,7 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
-
+                    self.data_socket_for = cmd.split(()[1])
                     self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
             elif cmdHead == 'PORT':
@@ -233,7 +267,7 @@ class Server(threading.Thread):
                 if not self.authenticated:
                     self.controlSock.send(b'530 Not logged in.\r\n')
 
-                elif self.dataMode == 'PASV' and self.dataSock is not None:
+                elif self.dataMode == 'PASV' and self.nlst_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
                     dir_list = os.listdir(self.cwd)
                     dir_with_type = {'dir': [], 'file': []}
@@ -246,9 +280,9 @@ class Server(threading.Thread):
                             dir_with_type['file'].append(ob)
 
                     directory = json.dumps(dir_with_type)
-                    self.dataSock.send(directory)
-                    self.dataSock.close()
-
+                    self.nlst_data_socket.send(directory)
+                    self.nlst_data_socket.close()
+                    self.nlst_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
@@ -264,20 +298,20 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
-                elif self.dataMode == 'PASV' and self.dataSock is not None:
+                elif self.dataMode == 'PASV' and self.retr_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     file_name = cmd.split()[1]
 
                     try:
-                        self.dataSock.send(open(file_name, 'rb').read(), opcode=2)
+                        self.retr_data_socket.send(open(file_name, 'rb').read(), opcode=2)
 
                     except Exception as e:
                         print e
                         # 没有文件的话在此处理
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
 
-                    self.dataSock.close()
-                    self.dataSock = None
+                    self.retr_data_socket.close()
+                    self.retr_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
@@ -293,14 +327,14 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
-                elif self.dataMode == 'PASV' and self.dataSock is not None:
+                elif self.dataMode == 'PASV' and self.stor_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     file_name = open(cmd.split()[1], 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
                     self.dataSock.setblocking(False)
                     while True:
                         try:
-                            data = self.dataSock.recv(self.bufSize)
+                            data = self.stor_data_socket.recv(self.bufSize)
                             if data == b'':
                                 break
                             if data is None:
@@ -310,28 +344,56 @@ class Server(threading.Thread):
                             break
                     file_name.close()
                     print "success"
-                    self.dataSock.close()
-                    self.dataSock = None
+                    self.stor_data_socket.close()
+                    self.stor_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
 
                 else:
                     self.controlSock.send(b"425 Can't open data connection.\r\n")
 
 
+class FTPServer(threading.Thread):
+
+    def __init__(self, client_type):
+        super(FTPServer, self).__init__()
+        self.WebPort = 12344
+        self.PrimitivePort = 12345
+        self.listenAddress = '127.0.0.1'
+        self.client_type = client_type
+
+    def run(self):
+        if self.client_type == 'Primitive':
+            primitiveScoket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+            primitiveScoket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            primitiveScoket.bind((self.listenAddress, self.PrimitivePort))
+            primitiveScoket.listen(5)
+            ip_management = IpListManagement()
+
+            while True:
+                controlSock, clientAddr = primitiveScoket.accept()
+                for i in ip_management.ip_data['ip_list']:
+                    if clientAddr[0] == i['address']:
+                        controlSock.send('421 Service not available, closing control connection')
+                        controlSock.close()
+                Server(controlSock, clientAddr, True).start()
+
+        else:
+            webScoket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+            webScoket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            webScoket.bind((self.listenAddress, self.WebPort))
+            webScoket.listen(5)
+            ip_management = IpListManagement()
+
+            while True:
+                controlSock, clientAddr = webScoket.accept()
+                for i in ip_management.ip_data['ip_list']:
+                    if clientAddr[0] == i['address']:
+                        controlSock.send('421 Service not available, closing control connection')
+                        controlSock.close()
+                Server(controlSock, clientAddr, False).start()
+
 if __name__ == '__main__':
 
-    listenAddr = "127.0.0.1"
-    listenPort = 12344
-    listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-    listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    listenSock.bind((listenAddr, listenPort))
-    listenSock.listen(5)
-    ip_management = IpListManagement()
+    FTPServer('Primitive').start()
+    FTPServer('Web').start()
 
-    while True:
-        controlSock, clientAddr = listenSock.accept()
-        for i in ip_management.ip_data['ip_list']:
-            if clientAddr[0] == i['address']:
-                controlSock.send('421 Service not available, closing control connection')
-                controlSock.close()
-        Server(controlSock, clientAddr).start()
