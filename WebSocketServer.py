@@ -195,7 +195,7 @@ class Server(threading.Thread):
                 else:
                     delete_dir = cmd.split()[1]
                     try:
-                        os.mkdir(delete_dir)
+                        os.remove(delete_dir)
                     except Exception as e:
                         print e
                         self.controlSock.send('550 Requested action not taken.')
@@ -251,7 +251,7 @@ class Server(threading.Thread):
                         self.dataMode = 'PASV'
                         DataSocket(self).start()
                         # 为什么
-                    self.data_socket_for = cmd.split(()[1])
+                    self.data_socket_for = cmd.split()[1]
                     self.controlSock.send('227 Entering passive mode (%s,%s)\r\n' % (self.dataAddr, self.dataPort))
 
             elif cmdHead == 'PORT':
