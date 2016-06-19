@@ -6,6 +6,8 @@ import threading
 import time
 from websocket import WebSocket
 import shutil
+import json
+from ip_management import IpListManagement
 
 __author__ = 'qm'
 
@@ -206,8 +208,6 @@ class Server(threading.Thread):
                     self.controlSock.send(b'530 Not logged in.\r\n')
 
                 else:
-                    # if self.dataListenSock is not None:
-                    # self.dataListenSock.close()
                     if self.dataListenSock is None:
                         self.dataListenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         self.dataListenSock.bind((self.dataAddr, 0))
@@ -235,7 +235,17 @@ class Server(threading.Thread):
 
                 elif self.dataMode == 'PASV' and self.dataSock is not None:
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
-                    directory = '\r\n'.join(os.listdir(self.cwd)) + "\r\n"
+                    dir_list = os.listdir(self.cwd)
+                    dir_with_type = {'dir': [], 'file': []}
+                    for ob in dir_list:
+                        if ob[0] == '.':
+                            continue
+                        if os.path.isdir(ob):
+                            dir_with_type['dir'].append(ob)
+                        elif os.path.isfile(ob):
+                            dir_with_type['file'].append(ob)
+
+                    directory = json.dumps(dir_with_type)
                     self.dataSock.send(directory)
                     self.dataSock.close()
 
@@ -255,8 +265,6 @@ class Server(threading.Thread):
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                 elif self.dataMode == 'PASV' and self.dataSock is not None:
-                    # programDir = os.getcwd()
-                    # os.chdir(self.cwd)
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     file_name = cmd.split()[1]
 
@@ -286,8 +294,6 @@ class Server(threading.Thread):
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                 elif self.dataMode == 'PASV' and self.dataSock is not None:
-                    # programDir = os.getcwd()
-                    # os.chdir(self.cwd)
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     file_name = open(cmd.split()[1], 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
@@ -295,7 +301,6 @@ class Server(threading.Thread):
                     while True:
                         try:
                             data = self.dataSock.recv(self.bufSize)
-                            # print data
                             if data == b'':
                                 break
                             if data is None:
@@ -321,7 +326,12 @@ if __name__ == '__main__':
     listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listenSock.bind((listenAddr, listenPort))
     listenSock.listen(5)
+    ip_management = IpListManagement()
 
     while True:
         controlSock, clientAddr = listenSock.accept()
+        for i in ip_management.ip_data['ip_list']:
+            if clientAddr[0] == i['address']:
+                controlSock.send('421 Service not available, closing control connection')
+                controlSock.close()
         Server(controlSock, clientAddr).start()
