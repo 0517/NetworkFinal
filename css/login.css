@@ -41,7 +41,7 @@
 	width: 100%;
 	height: 100%;
 	position: absolute;
-    display: none;
+    /*display: none;*/
 }
 
 .message p{
@@ -52,6 +52,10 @@
 }
 .form-group .row > div {
 	margin-top: 15px;
+}
+
+.main_board {
+    display: none;
 }
 
 @media (max-width: 960px) {
