@@ -45,7 +45,6 @@ class FTPClient:
         if self.parse_reply()[0] <= 3:
             self.connected = True
             self.controlSock.settimeout(1.0)
-            # Timeout 1 second
 
     def login(self, user, password):
         if not self.connected:
