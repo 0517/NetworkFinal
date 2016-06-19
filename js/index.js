@@ -73,16 +73,18 @@ function Client() {
     };
 
     this.login = function() {
+
         var user = $("#user").val();
-        var passw = $("#password").val();
         this.doSend("USER " + user + "\r\n");
-        this.doSend("PASS " + passw + "\r\n");
+
     };
 
     this.onMessage = function(event) {
         console.log(event);
 
         if (event.data.substring(0, 3) == '331') {
+
+            this.doSend("PASS " + $("#password").val() + "\r\n");
 
         } else if (event.data.substring(0, 3) == '220') {
 
@@ -93,8 +95,9 @@ function Client() {
             log("login success");
             $(".login").fadeOut("fast");
             $(".main_board").fadeIn("fast");
+            this.nlst();
 
-        } if (event.data.substring(0, 3) == '227') {
+        } else if (event.data.substring(0, 3) == '227') {
 
             host = this.re.exec(event.data)[1].split(')')[0];
             ip = host.split(',')[0];
@@ -104,6 +107,7 @@ function Client() {
             this.isPasv = false;
 
         } else {
+            this.isPasv = false;
             alert(event.data);
         }
     };
