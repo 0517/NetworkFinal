@@ -331,7 +331,7 @@ class Server(threading.Thread):
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     file_name = open(cmd.split()[1], 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
-                    self.dataSock.setblocking(False)
+                    self.stor_data_socket.setblocking(False)
                     while True:
                         try:
                             data = self.stor_data_socket.recv(self.bufSize)

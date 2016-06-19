@@ -25,7 +25,7 @@ class FTPClient:
             return
         else:
             if 0 < len(reply):
-                # print('<< ' + reply.strip().replace('\n', '\n<< '))
+                print('<< ' + reply.strip().replace('\n', '\n<< '))
                 return int(reply[0]), reply
             else:
                 # Server disconnected
@@ -109,8 +109,8 @@ class FTPClient:
         self.controlSock.send(('TYPE %s\r\n' % t).encode('ascii'))
         self.parse_reply()
 
-    def pasv(self):
-        self.controlSock.send(b'PASV\r\n')
+    def pasv(self, pasv_type):
+        self.controlSock.send(b'PASV %s\r\n' % pasv_type)
         reply = self.parse_reply()
         if reply[0] <= 3:
             m = re.search(r"\((\w*.+)", reply[1])
@@ -121,7 +121,7 @@ class FTPClient:
     def nlst(self):
         if not self.connected or not self.loggedIn:
             return
-        self.pasv()
+        self.pasv('NLST')
         if self.dataMode != 'PASV':
             # Currently only PASV is supported
             return
@@ -155,7 +155,7 @@ class FTPClient:
     def retr(self, filename):
         if not self.connected or not self.loggedIn:
             return
-        self.pasv()
+        self.pasv('RETR')
         if self.dataMode != 'PASV':
             # Currently only PASV is supported
             return
@@ -185,7 +185,7 @@ class FTPClient:
     def stor(self, filename):
         if not self.connected or not self.loggedIn:
             return
-        self.pasv()
+        self.pasv('STOR')
         if self.dataMode != 'PASV':
             # Currently only PASV is supported
             return
