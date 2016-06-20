@@ -279,8 +279,8 @@ class Server(threading.Thread):
 
                 elif self.dataMode == 'PASV' and self.nlst_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
+                    os.chdir(self.cwd)
                     dir_list = os.listdir(self.cwd)
-
                     dir_with_type = {'dir': [], 'file': []}
                     for ob in dir_list:
                         if ob[0] == '.':
@@ -294,7 +294,7 @@ class Server(threading.Thread):
                     self.nlst_data_socket.close()
                     self.nlst_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
-
+                    os.chdir(self.root_wd)
                 else:
                     self.controlSock.send(b"425 Can't open data connection.\r\n")
 
