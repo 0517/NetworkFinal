@@ -46,12 +46,16 @@ class IpListManagement(object):
                 return True
         return False
 
-    def modify_ip(self, id, address):
+    def modify_ip(self, ip_id, address):
         if not re.match(self.ip_pattern, address):
             return False
         ip_list = self.ip_data['ip_list']
+        try:
+            int_id = int(ip_id)
+        except Exception as e:
+            return False
         for i in ip_list:
-            if i['id'] == id:
+            if i['id'] == int_id:
                 i['address'] = address
                 f = open('ip_list.txt', 'w')
                 f.write(json.dumps(self.ip_data))
