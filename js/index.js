@@ -34,7 +34,8 @@ $(document).ready(function(){
         if (client.pwd.length == 1){
             $.scojs_message('No back dictionary', $.scojs_message.TYPE_ERROR);
         } else {
-            client.cdup();
+//            client.cdup();
+            client.cwd('..');
         }
     })
 
@@ -284,7 +285,7 @@ function Client() {
         this.data_socket['NLST'].socket.close();
         this.data_socket['NLST'] = undefined;
         var obj = JSON.parse(data);
-        var table = $('.table-striped tbody');
+        var table = $('.file-list tbody');
         table.empty();
 
         for (dir in obj['dir']) {
