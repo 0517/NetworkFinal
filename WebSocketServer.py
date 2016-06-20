@@ -45,6 +45,12 @@ class DataSocket(threading.Thread):
                         self.server.retr_data_socket = data_sock
                     else:
                         self.server.retr_data_socket = data_sock
+                elif self.server.data_sokcet_for == 'IP':
+                    if self.server.ip_data_socket is not None:
+                        self.server.ip_data_socket.close()
+                        self.server.ip_data_socket = data_sock
+                    else:
+                        self.server.ip_data_socket = data_sock
                 else:
                     if self.server.stor_data_socket is not None:
                         self.server.stor_data_socket.close()
@@ -78,6 +84,7 @@ class Server(threading.Thread):
         self.dataPort = None
         self.username = ''
         self.authenticated = False
+        self.if_administrator = False
         self.cwd = root
         self.root_wd = root
         self.typeMode = 'Binary'
@@ -85,6 +92,7 @@ class Server(threading.Thread):
         self.nlst_data_socket = None
         self.retr_data_socket = None
         self.stor_data_socket = None
+        self.ip_data_socket = None
         self.data_socket_for = 'NLST'
 
     def run(self):
@@ -129,6 +137,8 @@ class Server(threading.Thread):
                         self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                     else:
+                        if self.username == 'administor' and cmd.split()[1] == 'administor':
+                            self.if_administrator = True
                         self.controlSock.send(b'230 User logged in, proceed.\r\n')
                         self.authenticated = True
 
@@ -340,7 +350,8 @@ class Server(threading.Thread):
                 elif self.dataMode == 'PASV' and self.stor_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
                     os.chdir(self.cwd)
-                    file_name = open(cmd.split()[1], 'ab+')
+                    file_name = cmd[cmd.index(' ')+1:]
+                    f = open(file_name, 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
                     self.stor_data_socket.setblocking(False)
                     while True:
@@ -350,10 +361,10 @@ class Server(threading.Thread):
                                 break
                             if data is None:
                                 continue
-                            file_name.write(data)
+                            f.write(data)
                         except socket.error:
                             break
-                    file_name.close()
+                    f.close()
                     print "success"
                     self.stor_data_socket.close()
                     self.stor_data_socket = None
@@ -361,6 +372,13 @@ class Server(threading.Thread):
                     os.chdir(self.root_wd)
                 else:
                     self.controlSock.send(b"425 Can't open data connection.\r\n")
+
+            elif cmdHead == 'IP':
+                if self.if_administrator:
+                    pass
+                else:
+                    # 非管理员
+                    pass
 
 
 class FTPServer(threading.Thread):
