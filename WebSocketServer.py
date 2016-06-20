@@ -50,7 +50,7 @@ class DataSocket(threading.Thread):
                         self.server.retr_data_socket = data_sock
                     else:
                         self.server.retr_data_socket = data_sock
-                elif self.server.ip_sokcet_for == 'IP':
+                elif self.server.data_sokcet_for == 'IP':
                     if self.server.ip_data_socket is not None:
                         self.server.ip_data_socket.close()
                         self.server.ip_data_socket = data_sock
