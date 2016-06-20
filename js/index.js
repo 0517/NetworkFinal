@@ -34,7 +34,7 @@ $(document).ready(function(){
         if (client.pwd.length == 1){
             $.scojs_message('No back dictionary', $.scojs_message.TYPE_ERROR);
         } else {
-            client.cwd('..');
+            client.cdup();
         }
     })
 
@@ -137,7 +137,7 @@ function Client() {
     this.isPasv = false;
     this.currentType = "";
     this.currentFile = "";
-    this.isLogin = false;
+    this.isTimeOut = false;
     this.data_socket = {
         'NLST': null,
         'STOR': null,
@@ -153,24 +153,36 @@ function Client() {
         var port = $("#port").val();
         var url = "ws://" + ip + ":" + port + "/";
 
-        this.control_socket =  new WebSocket(url);
+        try{
+            window.setTimeout(this.checkTimeOut, 3000);
+            this.control_socket =  new WebSocket(url);
+        } catch (e) {
+
+        }
+
 
         this.control_socket.onopen = function(event) {
+
             log(event);
-            _this.isLogin = true;
+
         };
         this.control_socket.onmessage = function(event) {
             _this.onMessage(event);
         };
         this.control_socket.onerror = function(event) {
-            if (!_this.isLogin) {
-                $.scojs_message('Connect Error!', $.scojs_message.TYPE_ERROR);
-            }
+//            if (!_this.isLogin) {
+//                $.scojs_message('Connect Error!', $.scojs_message.TYPE_ERROR);
+//            }
+        }
+    };
+
+    this.checkTimeOut = function() {
+        if (!_this.isTimeOut) {
+            $.scojs_message('Connect Error! Wrong ip or port!', $.scojs_message.TYPE_ERROR);
         }
     };
 
     this.login = function() {
-
         var user = $("#user").val();
         this.doSend("USER " + user + "\r\n");
 
@@ -184,7 +196,7 @@ function Client() {
             this.doSend("PASS " + $("#password").val() + "\r\n");
 
         } else if (event.data.substring(0, 3) == '220') {
-
+            this.isTimeOut = true;
             this.login();
 
         } else if (event.data.substring(0, 3) == '230') {
@@ -345,6 +357,11 @@ function Client() {
 
     this.mkd = function(dir) {
         this.doSend('MKD ' + dir);
+    };
+
+    this.cdup = function() {
+        this.doSend('CDUP');
+        this.pwd.splice(this.pwd.length-1, 1);
     };
 
     this.updateCwd = function() {
