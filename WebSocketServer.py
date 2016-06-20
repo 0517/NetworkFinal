@@ -403,9 +403,9 @@ class Server(threading.Thread):
                         else:
                             self.controlSock.send('550 Requested action not taken.')
                     elif cmd.split()[1] == 'UPDATE':
-                        id = cmd.split()[2]
+                        ip_id = cmd.split()[2]
                         address = cmd.split()[3]
-                        if self.ip_management.modify_ip(id, address):
+                        if self.ip_management.modify_ip(ip_id, address):
                             self.controlSock.send('250 Requested action okay, completed')
                         else:
                             self.controlSock.send('550 Requested action not taken.')
