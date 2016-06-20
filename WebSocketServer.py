@@ -152,8 +152,8 @@ class Server(threading.Thread):
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
                     else:
                         self.cwd = os.getcwd()
-                        os.chdir(self.root_wd)
                         self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
+                        os.chdir(self.root_wd)
 
             elif cmdHead == 'RMD':
                 if not self.authenticated:
