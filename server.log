@@ -1,0 +1,76 @@
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:12344
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: IZdrgG+fYfoxxKQ9NnNvGw==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: cPybdrd7EaxUI3UzkdAL9u33Q/c=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:59958
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: mOzpt4cQZas9AGI5OeyyOA==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: UugtpeOew356kvZHLRQojInNRX8=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 22:54:31 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG 总长度是：9
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:59958
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: 0wAD8hbHi5cSfNGJpHW1KA==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: g4vOKG/Qmi6u94L8uCgySTrEaSg=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG 总长度是：6

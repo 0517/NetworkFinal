@@ -3,6 +3,7 @@ import base64
 import hashlib
 import struct
 import socket
+from log.log import LoggingManagement
 
 __author__ = 'bohaohan'
 
@@ -15,6 +16,7 @@ HANDSHAKE_STRING = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" \
       "WebSocket-Location: ws://{2}/\r\n" \
       "WebSocket-Protocol:sample\r\n\r\n"
 
+log = LoggingManagement()
 
 class WebSocket:
 
@@ -49,8 +51,6 @@ class WebSocket:
         else:
             token += struct.pack("!BQ", 127, length)
 
-        # struct 为 Python中处理二进制数的模块，二进制流为C，或网络流的形式。
-
         data = '%s%s' % (token, data)
         self.socket.send(data)
 
@@ -59,7 +59,7 @@ class WebSocket:
     def handshake(self):
         headers = {}
         shake = self.socket.recv(1024)
-        print shake
+        log.DEBUG(shake)
         if not len(shake):
             return False
 
@@ -69,7 +69,7 @@ class WebSocket:
             headers[key] = val
 
         if 'Sec-WebSocket-Key' not in headers:
-            print ('This socket is not websocket, client close.')
+            log.INFO('This socket may be not websocket, client close.')
             self.socket.close()
             return False
 
@@ -77,9 +77,9 @@ class WebSocket:
         res_key = base64.b64encode(hashlib.sha1(sec_key + MAGIC_STRING).digest())
 
         str_handshake = HANDSHAKE_STRING.replace('{1}', res_key).replace('{2}', 'localhost' + ':' + str('9876'))
-        print str_handshake
+        log.DEBUG(str_handshake)
         self.socket.send(str_handshake)
-        print "hand shake success"
+        log.DEBUG("hand shake success")
         self.is_hand_shake = True
 
         return True
@@ -99,7 +99,6 @@ class WebSocket:
         length_buffer += len(mm)
 
         buffer = buffer + mm
-        # if length_buffer - self.g_header_length < self.g_code_length:
         if False:
             return
         else:
@@ -110,7 +109,6 @@ class WebSocket:
             else:
                 msg_unicode = bytes(buffer_utf8)
 
-            # print msg_unicode, "msg"
             self.g_code_length = 0
             return msg_unicode
 
@@ -133,11 +131,7 @@ class WebSocket:
         return self.g_code_length
 
     def parse_data(self, msg):
-        # if self.isData:
-        #     print "data socket"
-        #     for m in msg:
-        #         print ord(m),
-        #     print "data socket"
+
         if ord(msg[0]) == 130:
             self.opCode = 2
 
@@ -161,14 +155,10 @@ class WebSocket:
         raw_str = ''
 
         for d in data:
-            # if True:
-            #     raw_str += chr(ord(d) ^ ord(masks[i % 4]))
-            #     # print raw_str
-            # else:
+
             raw_str += chr(ord(d) ^ ord(masks[i % 4]))
             i += 1
-
-        print (u"总长度是：%d" % int(self.g_code_length))
+        log.DEBUG(u"总长度是：%d" % int(self.g_code_length))
         return raw_str
 
     def close(self):
