@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 __author__ = 'qm'
 
-# -*- coding: utf-8 -*-
 
 import socket
 import os
@@ -263,7 +264,7 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
-                elif cmd.split()[1] != 'NLST' and cmd.split()[1] != 'RETR' and cmd.split()[1] != 'STOR':
+                elif cmd.split()[1] != 'NLST' and cmd.split()[1] != 'RETR' and cmd.split()[1] != 'STOR' and cmd.split()[1] != 'IP':
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                 else:
