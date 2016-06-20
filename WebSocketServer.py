@@ -110,7 +110,7 @@ class Server(threading.Thread):
             if cmd == '':
                 self.controlSock.close()
                 break
-            //if cmd is not None:
+
             cmdHead = cmd.split()[0].upper()
             print 'receive head', cmdHead
             if cmdHead == 'QUIT':
