@@ -57,6 +57,12 @@
 .main_board {
     display: none;
 }
+.dictionary {
+    cursor: pointer;
+}
+.template {
+    display: none;
+}
 
 @media (max-width: 960px) {
 	.title {

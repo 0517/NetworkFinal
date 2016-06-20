@@ -195,7 +195,7 @@ class Server(threading.Thread):
                 else:
                     delete_dir = cmd.split()[1]
                     try:
-                        os.mkdir(delete_dir)
+                        os.remove(delete_dir)
                     except Exception as e:
                         print e
                         self.controlSock.send('550 Requested action not taken.')
