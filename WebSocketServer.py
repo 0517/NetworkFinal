@@ -111,6 +111,7 @@ class Server(threading.Thread):
             if cmd == '':
                 self.controlSock.close()
                 break
+
             cmdHead = cmd.split()[0].upper()
             print 'receive head', cmdHead
             if cmdHead == 'QUIT':
