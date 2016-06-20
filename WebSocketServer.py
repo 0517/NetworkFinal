@@ -213,7 +213,7 @@ class Server(threading.Thread):
                     self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
 
                 else:
-
+                    print "change to dir:", cmd.split()[1]
                     os.chdir(self.cwd)
                     next_dir = cmd.split()[1]
                     try:
@@ -221,11 +221,11 @@ class Server(threading.Thread):
                     except OSError as e:
                         print e
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
-                        os.chdir(self.root_wd)
+
                     else:
                         self.cwd = os.getcwd()
-                        os.chdir(self.root_wd)
                         self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
+                    os.chdir(self.root_wd)
 
             elif cmd == 'TYPE':
 
@@ -274,15 +274,15 @@ class Server(threading.Thread):
                 elif self.dataMode == 'PASV' and self.nlst_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open. Transfer starting.\r\n')
                     dir_list = os.listdir(self.cwd)
+
                     dir_with_type = {'dir': [], 'file': []}
                     for ob in dir_list:
                         if ob[0] == '.':
                             continue
                         if os.path.isdir(ob):
                             dir_with_type['dir'].append(ob)
-                        elif os.path.isfile(ob):
+                        else:
                             dir_with_type['file'].append(ob)
-
                     directory = json.dumps(dir_with_type)
                     self.nlst_data_socket.send(directory)
                     self.nlst_data_socket.close()
