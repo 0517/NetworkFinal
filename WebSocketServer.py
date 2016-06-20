@@ -163,6 +163,7 @@ class Server(threading.Thread):
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
                 else:
                     rm_dir = cmd.split()[1]
+                    os.chdir(self.cwd)
                     try:
                         shutil.rmtree(rm_dir)
                     except Exception as e:
@@ -170,6 +171,7 @@ class Server(threading.Thread):
                         self.controlSock.send('550 Requested action not taken.')
                     else:
                         self.controlSock.send('250 Requested file action okay, completed.')
+                    os.chdir(self.root_wd)
 
             elif cmdHead == 'MKD':
                 if not self.authenticated:
@@ -179,6 +181,7 @@ class Server(threading.Thread):
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
                 else:
                     new_dir = cmd.split()[1]
+                    os.chdir(self.cwd)
                     try:
                         os.mkdir(new_dir)
                     except Exception as e:
@@ -186,6 +189,7 @@ class Server(threading.Thread):
                         self.controlSock.send('550 Requested action not taken.')
                     else:
                         self.controlSock.send('250 Requested file action okay, completed.')
+                    os.chdir(self.root_wd)
 
             elif cmdHead == 'DELETE':
 
@@ -195,6 +199,7 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
                 else:
+                    os.chdir(self.cwd)
                     delete_dir = cmd.split()[1]
                     try:
                         os.remove(delete_dir)
@@ -203,6 +208,7 @@ class Server(threading.Thread):
                         self.controlSock.send('550 Requested action not taken.')
                     else:
                         self.controlSock.send('250 Requested file action okay, completed.')
+                    os.chdir(self.root_wd)
 
             elif cmdHead == 'CWD':
 
