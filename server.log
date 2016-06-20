@@ -74,6 +74,7 @@ WebSocket-Protocol:sample
 
 Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG hand shake success
 Mon, 20 Jun 2016 22:54:41 log.py[line:21] DEBUG 总长度是：6
+<<<<<<< HEAD
 Mon, 20 Jun 2016 23:19:00 log.py[line:21] DEBUG GET / HTTP/1.1
 Host: 127.0.0.1:12344
 Connection: Upgrade
@@ -1290,3 +1291,245 @@ WebSocket-Protocol:sample
 Mon, 20 Jun 2016 23:39:28 log.py[line:21] DEBUG hand shake success
 Mon, 20 Jun 2016 23:39:28 log.py[line:21] DEBUG 总长度是：6
 Mon, 20 Jun 2016 23:39:29 log.py[line:21] DEBUG 总长度是：6
+=======
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:12344
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: C2jqCp/FuaqvBuBJKwSz+w==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: l2cSiouZ36OP9F/CQ+idfONueBU=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60306
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: dApJUTMkNsf25VjKEKtiyg==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: tPdr8vbLF0DZDVrbLyOOSKyi9XQ=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:32 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG 总长度是：9
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60306
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: gArkEgaeLDg4KJsExLCGrA==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: 3X7xJhRJh5Fq6qJqVQ6nDO+pV10=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:41 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:33:50 log.py[line:30] ERROR 'NoneType' object has no attribute 'split'
+Traceback (most recent call last):
+  File "/Users/qm/PycharmProjects/Final/WebSocketServer.py", line 111, in run
+    cmdHead = cmd.split()[0].upper()
+AttributeError: 'NoneType' object has no attribute 'split'
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:12344
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: /tY2aZe7QnAqeqX4WnXYCg==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: njBCtmMOkr87OpysJZkNjbZ+HU8=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG 总长度是：22
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60310
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: MzncftFh/Bj6/mc0RULt0g==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: FIm05nfhibZ5mG91obxvOBwFOgQ=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:52 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG 总长度是：9
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60310
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: onlXgCkbqUv9CUehISrmkA==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: f+JznGGXpcCB1VccX3iDa4IvUes=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:33:54 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG 总长度是：14
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60310
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: /oZA67SDQpwnqId0FPnLHA==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: MjHeFj5l//AkcyLlrWB1LKQOyck=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:34:04 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:34:05 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:34:05 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60310
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: KCwe0wbAtZaY7pISDoEQ/Q==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:34:05 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: e/kqKeEgZnswy6gg11RBMbtRst4=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:34:05 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:34:05 log.py[line:21] DEBUG 总长度是：6
+Mon, 20 Jun 2016 23:34:06 log.py[line:21] DEBUG 总长度是：14
+Mon, 20 Jun 2016 23:34:06 log.py[line:30] ERROR [Errno 2] No such file or directory: 'T'
+Traceback (most recent call last):
+  File "/Users/qm/PycharmProjects/Final/WebSocketServer.py", line 243, in run
+    os.chdir(next_dir)
+OSError: [Errno 2] No such file or directory: 'T'
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG 总长度是：14
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG 总长度是：11
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:60310
+Origin: http://localhost:8080
+Pragma: no-cache
+Cache-Control: no-cache
+Sec-WebSocket-Key: abCQh6xcDikFMUv001ybHw==
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Extensions: x-webkit-deflate-frame
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/601.5.17 (KHTML, like Gecko) Version/9.1 Safari/601.5.17
+
+
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG HTTP/1.1 101 Web Socket Protocol Handshake
+Upgrade: Websocket
+Connection: Upgrade
+WebSocket-Origin: http://localhost:8888
+Sec-WebSocket-Accept: iUenbiPTm7yu2MnLuoR1tOE3OK0=
+WebSocket-Location: ws://localhost:9876/
+WebSocket-Protocol:sample
+
+
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG hand shake success
+Mon, 20 Jun 2016 23:34:09 log.py[line:21] DEBUG 总长度是：6
+>>>>>>> 093ddc136b23605ba0496130ebe946b7368f1b53
