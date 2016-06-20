@@ -61,7 +61,7 @@ class DataSocket(threading.Thread):
 
 class Server(threading.Thread):
 
-    def __init__(self, controlSock, clientAddr, ifPrimitive):
+    def __init__(self, controlSock, clientAddr, ifPrimitive, root):
 
         super(Server, self).__init__()
         self.daemon = True
@@ -79,6 +79,7 @@ class Server(threading.Thread):
         self.username = ''
         self.authenticated = False
         self.cwd = os.getcwd()
+        self.root_wd = root
         self.typeMode = 'Binary'
         self.dataMode = 'PORT'
         self.nlst_data_socket = None
@@ -151,6 +152,7 @@ class Server(threading.Thread):
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
                     else:
                         self.cwd = os.getcwd()
+                        os.chdir(self.root_wd)
                         self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
 
             elif cmdHead == 'RMD':
@@ -219,8 +221,10 @@ class Server(threading.Thread):
                     except OSError as e:
                         print e
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
+                        os.chdir(self.root_wd)
                     else:
                         self.cwd = os.getcwd()
+                        os.chdir(self.root_wd)
                         self.controlSock.send('250 "%s" is the current directory.\r\n' % self.cwd)
 
             elif cmd == 'TYPE':
@@ -303,13 +307,13 @@ class Server(threading.Thread):
                     file_name = cmd.split()[1]
 
                     try:
+                        os.chdir(self.cwd)
                         self.retr_data_socket.send(open(file_name, 'rb').read(), opcode=2)
-
                     except Exception as e:
                         print e
                         # 没有文件的话在此处理
                         self.controlSock.send(b'550 Requested action not taken. File unavailable (e.g., file busy).\r\n')
-
+                    os.chdir(self.root_wd)
                     self.retr_data_socket.close()
                     self.retr_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
@@ -329,6 +333,7 @@ class Server(threading.Thread):
 
                 elif self.dataMode == 'PASV' and self.stor_data_socket is not None:
                     self.controlSock.send(b'125 Data connection already open; transfer starting.\r\n')
+                    os.chdir(self.cwd)
                     file_name = open(cmd.split()[1], 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
                     self.stor_data_socket.setblocking(False)
@@ -347,7 +352,7 @@ class Server(threading.Thread):
                     self.stor_data_socket.close()
                     self.stor_data_socket = None
                     self.controlSock.send(b'225 Closing data connection. Requested file action successful (for example, file transfer or file abort).\r\n')
-
+                    os.chdir(self.root_wd)
                 else:
                     self.controlSock.send(b"425 Can't open data connection.\r\n")
 
@@ -375,7 +380,7 @@ class FTPServer(threading.Thread):
                     if clientAddr[0] == i['address']:
                         controlSock.send('421 Service not available, closing control connection')
                         controlSock.close()
-                Server(controlSock, clientAddr, True).start()
+                Server(controlSock, clientAddr, True, os.getcwd()).start()
 
         else:
             webScoket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
@@ -390,7 +395,7 @@ class FTPServer(threading.Thread):
                     if clientAddr[0] == i['address']:
                         controlSock.send('421 Service not available, closing control connection')
                         controlSock.close()
-                Server(controlSock, clientAddr, False).start()
+                Server(controlSock, clientAddr, False, os.getcwd()).start()
 
 if __name__ == '__main__':
 
