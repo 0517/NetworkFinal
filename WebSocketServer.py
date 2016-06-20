@@ -111,12 +111,14 @@ class Server(threading.Thread):
                 cmdHead = cmd.split()[0].upper()
             except Exception as e:
                 logging.error(e)
-                self.controlSock.send('221Serviceclosingcontrolconnection.\r\n')
+                self.controlSock.send('221 Service closing control connection.\r\n')
                 self.controlSock.close()
                 break
+
             print 'receive head', cmdHead
+
             if cmdHead == 'QUIT':
-                self.controlSock.send('501 Syntax error in parameters or arguments.\r\n')
+                self.controlSock.send('221 Service closing control connection.\r\n')
                 self.controlSock.close()
                 break
 
