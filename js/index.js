@@ -160,6 +160,9 @@ function Client() {
         this.control_socket.onmessage = function(event) {
             _this.onMessage(event);
         };
+        this.control_socket.onerror = function(event) {
+            $.scojs_message(event.data, $.scojs_message.TYPE_ERROR);
+        }
     };
 
     this.login = function() {
