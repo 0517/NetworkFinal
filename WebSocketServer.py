@@ -11,6 +11,10 @@ from ip_management import IpListManagement
 
 __author__ = 'qm'
 
+import sys;
+reload(sys);
+sys.setdefaultencoding("utf8")
+
 
 class DataSocket(threading.Thread):
 
@@ -71,7 +75,7 @@ class Server(threading.Thread):
 
         super(Server, self).__init__()
         self.daemon = True
-        self.bufSize = 100024
+        self.bufSize = 2000000000
         self.ifPrimitive = ifPrimitive
         if ifPrimitive:
             self.controlSock = controlSock
@@ -106,7 +110,7 @@ class Server(threading.Thread):
             if cmd == '':
                 self.controlSock.close()
                 break
-
+            //if cmd is not None:
             cmdHead = cmd.split()[0].upper()
             print 'receive head', cmdHead
             if cmdHead == 'QUIT':

@@ -7,19 +7,37 @@ $(document).ready(function(){
         client.connect();
     });
 
-//    $("#fileButton").click(function() {
-//        client.upLoad();
-//    });
+    $(".quit").click(function() {
+        client.quit();
+    });
+
+    $(".ip").click(function() {
+        if (!$(this).hasClass('active')) {
+            $('.ftp-list').hide();
+            $('.ip-list').show();
+            $('.ftp').removeClass('active');
+            $(this).addClass('active');
+        }
+    });
+
+    $(".ftp").click(function() {
+
+        if (!$(this).hasClass('active')) {
+            $('.ip-list').hide();
+            $('.ftp-list').show();
+            $('.ip').removeClass('active');
+            $(this).addClass('active');
+        }
+
+    });
+
+
     $('#fileButton').on('click', function () {
         var $btn = $(this).button('loading');
         client.upLoad();
-        // business logic...
-//      $btn.button('reset');
+
     });
 
-//    $("#createButton").click(function() {
-//        client.upLoad();
-//    });
     $('#createButton').on('click', function () {
         var $btn = $(this).button('loading');
         var name = $('#create').val();
@@ -32,9 +50,9 @@ $(document).ready(function(){
         log("back!!");
         e.preventDefault();
         if (client.pwd.length == 1){
-            $.scojs_message('No back dictionary', $.scojs_message.TYPE_ERROR);
+            $.scojs_message('Already root folder', $.scojs_message.TYPE_ERROR);
         } else {
-            client.cdup();
+            client.cwd('..');
         }
     })
 
@@ -85,11 +103,15 @@ function DataSocket(type) {
     this.type = type;
     this.socket = null;
     this.name = "";
+
     this.connect = function(ip, port) {
+
         log('connecting');
         var url = "ws://" + ip + ":" + port + "/";
         this.socket =  new WebSocket(url);
+
         this.socket.onopen = function(event) {
+
             log(event);
             client.isPasv = false;
             if (_this.type == 'NLST') {
@@ -100,6 +122,7 @@ function DataSocket(type) {
                 _this.name = client.currentFile;
                 client.doSend('RETR ' + _this.name);
             }
+
         };
         this.socket.onmessage = function(event) {
             _this.onMessage(event);
@@ -107,15 +130,21 @@ function DataSocket(type) {
 
     };
     this.onMessage = function(event) {
+
         log('data');
         log(event);
+
         if (this.type == 'NLST') {
+
             client.processNlst(event.data);
+
         } else if (this.type == 'RETR') {
+
             var blob = event.data;
             saveAs(blob, this.name);
             this.socket.close();
             client.data_socket[this.type] = undefined;
+
         }
 
     };
@@ -138,14 +167,18 @@ function Client() {
     this.currentType = "";
     this.currentFile = "";
     this.isTimeOut = false;
+
     this.data_socket = {
         'NLST': null,
         'STOR': null,
         'RETR': null
     };
+
     this.re = /\((\w*.+)/;
     this.file_row = $('#file-tmp').clone();
     this.fold_row = $('#folder-tmp').clone();
+    this.username = "";
+    this.names = [];
 
     this.connect = function() {
 
@@ -154,8 +187,10 @@ function Client() {
         var url = "ws://" + ip + ":" + port + "/";
 
         try{
+
             window.setTimeout(this.checkTimeOut, 3000);
             this.control_socket =  new WebSocket(url);
+
         } catch (e) {
 
         }
@@ -167,28 +202,34 @@ function Client() {
 
         };
         this.control_socket.onmessage = function(event) {
+
             _this.onMessage(event);
+
         };
         this.control_socket.onerror = function(event) {
-//            if (!_this.isLogin) {
-//                $.scojs_message('Connect Error!', $.scojs_message.TYPE_ERROR);
-//            }
+
         }
     };
 
     this.checkTimeOut = function() {
+
         if (!_this.isTimeOut) {
             $.scojs_message('Connect Error! Wrong ip or port!', $.scojs_message.TYPE_ERROR);
         }
+
     };
 
     this.login = function() {
+
         var user = $("#user").val();
+        this.username = user;
+        $('.username').text(user);
         this.doSend("USER " + user + "\r\n");
 
     };
 
     this.onMessage = function(event) {
+
         console.log(event);
 
         if (event.data.substring(0, 3) == '331') {
@@ -196,6 +237,7 @@ function Client() {
             this.doSend("PASS " + $("#password").val() + "\r\n");
 
         } else if (event.data.substring(0, 3) == '220') {
+
             this.isTimeOut = true;
             this.login();
 
@@ -217,28 +259,39 @@ function Client() {
 
         } else if (event.data.substring(0, 3) == '125') {
 
+        } else if (event.data.substring(0, 3) == '221') {
+
+            $.scojs_message('Successfully Quit!', $.scojs_message.TYPE_OK);
+            log("quit success");
+            this.control_socket.close();
+            $(".login").fadeIn("fast");
+            $(".main_board").fadeOut("fast");
+
         } else if (event.data.substring(0, 3) == '250') {
-//            $.scojs_message('Upload successfully!', $.scojs_message.TYPE_OK);
+
             this.nlst();
+
 
         }  else if (event.data.substring(0, 3) == '225') {
 
             if($('#fileButton').button().text() == "Waiting...") {
+
                 $('#fileButton').button('reset');
                 $.scojs_message('Upload successfully!', $.scojs_message.TYPE_OK);
                 this.nlst();
                 $('.close').click();
                 this.data_socket['STOR'].socket.close();
                 this.data_socket['STOR'] = undefined;
+
             } else if($('#createButton').button().text() == "Waiting...") {
+
                 $('#createButton').button('reset');
                 $.scojs_message('Create successfully!', $.scojs_message.TYPE_OK);
                 this.nlst();
                 $('.close').click();
+
             }
-//            else if($('#fileButton').button().text() == "Waiting...") {
-//                $('#fileButton').button('reset');
-//            }
+
         } else {
             this.isPasv = false;
             alert(event.data);
@@ -253,10 +306,7 @@ function Client() {
     };
 
     this.pasv = function(type){
-        // type: NLST, STOR, RETR
-//        if (!(type in this.data_socket.altKey)) {
-//            alert("Wrong type")
-//        } else
+
         if (!this.isPasv) {
 
             this.currentType = type;
@@ -264,7 +314,7 @@ function Client() {
             this.doSend("PASV " + type);
 
         } else {
-//            alert("A data socket is connecting.")
+
         }
 
     };
@@ -279,33 +329,45 @@ function Client() {
     };
 
     this.processNlst = function (data) {
+
+        this.names = [];
         this.updateCwd();
         this.isPasv = false;
         this.data_socket['NLST'].socket.close();
         this.data_socket['NLST'] = undefined;
         var obj = JSON.parse(data);
-        var table = $('.table-striped tbody');
+        var table = $('.file-list tbody');
         table.empty();
+
+        if (obj['dir'].length == 0 && obj['file'].length == 0) {
+            table.append('Nothing');
+        }
 
         for (dir in obj['dir']) {
             var row = this.fold_row.clone();
             row.find('.name').text(obj['dir'][dir]);
+            this.names.push(obj['dir'][dir]);
             table.append(row);
         }
 
         for (file in obj['file']) {
             var row = this.file_row.clone();
             row.find('.name').text(obj['file'][file]);
+            this.names.push(obj['file'][file]);
             table.append(row);
         }
         updateClick();
+
     };
 
     this.upLoad = function() {
 
         var type = 'STOR';
-        if (this.data_socket[type] != undefined) {
-
+        var p = $('#file').val();
+        var file_name = p.substring(p.lastIndexOf("\\")+1);
+        if (this.checkExsit(file_name)) {
+            $.scojs_message('File name exist!', $.scojs_message.TYPE_ERROR);
+            $('#fileButton').button('reset');
         } else {
             this.pasv('STOR');
         }
@@ -346,22 +408,31 @@ function Client() {
     };
 
     this.rmd = function(dir) {
+
         this.doSend('RMD ' + dir);
         $.scojs_message('Successfully Delete!', $.scojs_message.TYPE_OK);
+
     };
 
     this.delete = function(dir) {
+
         this.doSend('DELETE ' + dir);
         $.scojs_message('Successfully Delete!', $.scojs_message.TYPE_OK);
+
     };
 
     this.mkd = function(dir) {
-        this.doSend('MKD ' + dir);
+        if (this.checkExsit(dir)) {
+            $.scojs_message('File name exist!', $.scojs_message.TYPE_ERROR);
+            $('#createButton').button('reset');
+        } else {
+            this.doSend('MKD ' + dir);
+        }
     };
 
-    this.cdup = function() {
-        this.doSend('CDUP');
-        this.pwd.splice(this.pwd.length-1, 1);
+
+    this.quit = function() {
+        this.doSend('QUIT');
     };
 
     this.updateCwd = function() {
@@ -376,6 +447,13 @@ function Client() {
 
             $('.path').append(item);
         }
+    }
+
+    this.checkExsit = function(name) {
+        for (var i = 0; i < this.names.length; i++) {
+            if (this.names[i] == name) return true;
+        }
+        return false;
     }
 
 

@@ -64,6 +64,10 @@
     display: none;
 }
 
+.ip-list {
+    display: none;
+}
+
 @media (max-width: 960px) {
 	.title {
 		width: 100%;
