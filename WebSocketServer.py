@@ -178,10 +178,10 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send('501 Syntax error in parameters or arguments.\r\n')
                 else:
-                    rm_dir = cmd.split()[1]
+                    dir_name = cmd[cmd.index(' ')+1: cmd.index('\r\n')]
                     os.chdir(self.cwd)
                     try:
-                        shutil.rmtree(rm_dir)
+                        shutil.rmtree(dir_name)
                     except Exception as e:
                         logging.error(e)
                         self.controlSock.send('550 Requested action not taken.')
@@ -196,10 +196,10 @@ class Server(threading.Thread):
                 elif len(cmd.split()) < 2:
                     self.controlSock.send('501 Syntax error in parameters or arguments.\r\n')
                 else:
-                    new_dir = cmd.split()[1]
+                    dir_name = cmd[cmd.index(' ')+1: cmd.index('\r\n')]
                     os.chdir(self.cwd)
                     try:
-                        os.mkdir(new_dir)
+                        os.mkdir(dir_name)
                     except Exception as e:
                         logging.error(e)
                         self.controlSock.send('550 Requested action not taken.')
@@ -216,9 +216,9 @@ class Server(threading.Thread):
                     self.controlSock.send('501 Syntax error in parameters or arguments.\r\n')
                 else:
                     os.chdir(self.cwd)
-                    delete_dir = cmd.split()[1]
+                    file_name = cmd[cmd.index(' ')+1: cmd.index('\r\n')]
                     try:
-                        os.remove(delete_dir)
+                        os.remove(file_name)
                     except Exception as e:
                         logging.error(e)
                         self.controlSock.send('550 Requested action not taken.')
