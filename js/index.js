@@ -359,7 +359,7 @@ function Client() {
 
         } else {
             this.isPasv = false;
-            alert(event.data);
+//            alert(event.data);
         }
     };
 
