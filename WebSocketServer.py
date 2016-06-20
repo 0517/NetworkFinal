@@ -356,7 +356,7 @@ class Server(threading.Thread):
                 elif self.dataMode == 'PASV' and self.stor_data_socket is not None:
                     self.controlSock.send('125 Data connection already open; transfer starting.\r\n')
                     os.chdir(self.cwd)
-                    file_name = cmd[cmd.index(' ')+1:]
+                    file_name = cmd[cmd.index(' ')+1: cmd.index('\r\n')]
                     f = open(file_name, 'ab+')
                     # 在非阻塞模式下, 如果recv()调用没有发现任何数据或者send()调用无法立即发送数据, 那么将引发socket.error异常。在阻塞模式下, 这些调用在处理之前都将被阻塞。
                     self.stor_data_socket.setblocking(False)
