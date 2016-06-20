@@ -78,7 +78,7 @@ class Server(threading.Thread):
         self.dataPort = None
         self.username = ''
         self.authenticated = False
-        self.cwd = os.getcwd()
+        self.cwd = root
         self.root_wd = root
         self.typeMode = 'Binary'
         self.dataMode = 'PORT'
