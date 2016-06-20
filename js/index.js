@@ -17,6 +17,7 @@ $(document).ready(function(){
             $('.ip-list').show();
             $('.ftp').removeClass('active');
             $(this).addClass('active');
+            client.ip();
         }
     });
 
@@ -38,6 +39,13 @@ $(document).ready(function(){
 
     });
 
+    $('#addButton').on('click', function () {
+
+        var $btn = $(this).button('loading');
+        client.addIp($('#create').val());
+
+    });
+
     $('#createButton').on('click', function () {
         var $btn = $(this).button('loading');
         var name = $('#create').val();
@@ -54,7 +62,11 @@ $(document).ready(function(){
         } else {
             client.cwd('..');
         }
-    })
+    });
+
+    $('#Modify').click(function(){
+        client.modifyIp($("#ip-id").val(), $("#new-ip").val());
+    });
 
 });
 
@@ -91,6 +103,25 @@ function updateClick() {
         });
     });
 
+    $.each($('.ip_delete'), function(){
+        $(this).on('click', function(e){
+            e.preventDefault();
+//            var id = $(this).parent().parent().parent().parent().find('.id').text();
+            var id = $(this).parent().parent().find('.id').text();
+//            log(id);
+            client.deleteIp(id);
+        });
+    });
+
+//    $.each($('.modify'), function(){
+//        $(this).on('click', function(e){
+//            e.preventDefault();
+//            var id = $(this).parent().parent().find('.id').text();
+//            log(id);
+////            client.deleteIp(id);
+//        });
+//    });
+
 }
 
 function log(message) {
@@ -114,18 +145,31 @@ function DataSocket(type) {
 
             log(event);
             client.isPasv = false;
+
             if (_this.type == 'NLST') {
+
                 client.doSend('NLST')
+
             } else if (_this.type == 'STOR') {
+
                 client.sendFile();
+
             } else if (_this.type == 'RETR') {
+
                 _this.name = client.currentFile;
                 client.doSend('RETR ' + _this.name);
+
+            } else if (_this.type == 'IP') {
+
+                client.doSend('IP');
+
             }
 
         };
         this.socket.onmessage = function(event) {
+
             _this.onMessage(event);
+
         };
 
     };
@@ -144,6 +188,10 @@ function DataSocket(type) {
             saveAs(blob, this.name);
             this.socket.close();
             client.data_socket[this.type] = undefined;
+
+        } else if (this.type == 'IP') {
+
+            client.processIp(event.data);
 
         }
 
@@ -177,8 +225,10 @@ function Client() {
     this.re = /\((\w*.+)/;
     this.file_row = $('#file-tmp').clone();
     this.fold_row = $('#folder-tmp').clone();
+    this.ip_row = $('#ip-tmp').clone();
     this.username = "";
     this.names = [];
+    this.ips = [];
 
     this.connect = function() {
 
@@ -259,6 +309,8 @@ function Client() {
 
         } else if (event.data.substring(0, 3) == '125') {
 
+        } else if (event.data.substring(0, 3) == '550') {
+
         } else if (event.data.substring(0, 3) == '221') {
 
             $.scojs_message('Successfully Quit!', $.scojs_message.TYPE_OK);
@@ -269,7 +321,11 @@ function Client() {
 
         } else if (event.data.substring(0, 3) == '250') {
 
-            this.nlst();
+            if ($(".ip").hasClass("active")) {
+                this.ip();
+            } else {
+                this.nlst();
+            }
 
 
         }  else if (event.data.substring(0, 3) == '225') {
@@ -288,6 +344,20 @@ function Client() {
                 $('#createButton').button('reset');
                 $.scojs_message('Create successfully!', $.scojs_message.TYPE_OK);
                 this.nlst();
+                $('.close').click();
+
+            } else if($('#addButton').button().text() == "Waiting...") {
+
+                $('#addButton').button('reset');
+                $.scojs_message('Add successfully!', $.scojs_message.TYPE_OK);
+                this.ip();
+                $('.close').click();
+
+            } else if($('#Modify').button().text() == "Waiting...") {
+
+                $('#Modify').button('reset');
+                $.scojs_message('Modify successfully!', $.scojs_message.TYPE_OK);
+                this.ip();
                 $('.close').click();
 
             }
@@ -454,8 +524,69 @@ function Client() {
             if (this.names[i] == name) return true;
         }
         return false;
-    }
+    };
 
+    this.ip = function() {
+
+        var type = 'IP';
+        this.pasv(type);
+
+    };
+
+    this.processIp = function(data) {
+
+        this.ips = [];
+        var obj = JSON.parse(data);
+        var table = $('.ip-list tbody');
+        table.empty();
+
+        for (var i in obj) {
+
+            var row = this.ip_row.clone();
+            this.ips.push(obj[i]['address']);
+            row.find(".name").text(obj[i]['address']);
+            row.find(".id").text(obj[i]['id']);
+            table.append(row);
+
+        }
+        if (obj.length == 0) {
+            table.append('Nothing');
+        }
+
+        updateClick();
+    };
+
+    this.checkIp = function(ip) {
+        for (var i in this.ips) {
+            if (ip == this.ips[i]) return true;
+        }
+        return false;
+    };
+
+    this.addIp = function(ip) {
+
+        if(!this.checkIp(ip)) {
+            this.doSend("IP ADD " + ip);
+        } else {
+            $.scojs_message('Ip address exist!', $.scojs_message.TYPE_ERROR);
+        }
+
+    };
+
+    this.deleteIp = function(id) {
+
+        this.doSend("IP DELETE " + id);
+        $.scojs_message('Successfully Delete!', $.scojs_message.TYPE_OK);
+
+    };
+
+    this.modifyIp = function(id, ip) {
+        if(!this.checkIp(ip)) {
+            this.doSend("IP UPDATE " + id + " " + ip);
+        } else {
+            $.scojs_message('Ip address exist!', $.scojs_message.TYPE_ERROR);
+        }
+    }
 
 }
 
