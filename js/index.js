@@ -224,6 +224,8 @@ function Client() {
     this.names = [];
     this.ips = [];
 
+    this.ipRe =  /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
+
     this.connect = function() {
 
         var ip = $("#ip").val();
@@ -592,11 +594,16 @@ function Client() {
     this.addIp = function(ip) {
 
         if(!this.checkIp(ip)) {
+            if (this.ipRe.test(ip)) {
 
-            this.doSend("IP ADD " + ip);
+                this.doSend("IP ADD " + ip);
+            } else {
+                $('#addButton').button('reset');
+                $.scojs_message('Ip address wrong form!', $.scojs_message.TYPE_ERROR);
+            }
 
         } else {
-
+            $('#addButton').button('reset');
             $.scojs_message('Ip address exist!', $.scojs_message.TYPE_ERROR);
 
         }
@@ -613,15 +620,21 @@ function Client() {
     this.modifyIp = function(id, ip) {
 
         if(!this.checkIp(ip)) {
+            if (this.ipRe.test(ip)) {
 
-            this.doSend("IP UPDATE " + id + " " + ip);
+                this.doSend("IP UPDATE " + id + " " + ip);
+
+            } else {
+                $('#Modify').button('reset');
+                $.scojs_message('Ip address wrong form!', $.scojs_message.TYPE_ERROR);
+            }
 
         } else {
-
+            $('#Modify').button('reset');
             $.scojs_message('Ip address exist!', $.scojs_message.TYPE_ERROR);
 
         }
-    }
+    };
 
 }
 
