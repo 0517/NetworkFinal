@@ -53,6 +53,7 @@ class IpListManagement(object):
         try:
             int_id = int(ip_id)
         except Exception as e:
+            print e
             return False
         for i in ip_list:
             if i['id'] == int_id:
