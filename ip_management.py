@@ -34,10 +34,11 @@ class IpListManagement(object):
         else:
             return False
 
-    def delete_ip(self, id):
+    def delete_ip(self, ip_id):
         ip_list = self.ip_data['ip_list']
         for i in ip_list:
-            if i['id'] == id:
+            print i, ip_id
+            if str(i['id']) == ip_id:
                 ip_list.remove(i)
                 f = open('ip_list.txt', 'w')
                 f.write(json.dumps(self.ip_data))

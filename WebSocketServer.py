@@ -397,8 +397,8 @@ class Server(threading.Thread):
                         else:
                             self.controlSock.send('550 Requested action not taken.')
                     elif cmd.split()[1] == 'DELETE':
-                        id = cmd.split()[2]
-                        if self.ip_management.delete_ip(id):
+                        ip_id = cmd.split()[2]
+                        if self.ip_management.delete_ip(ip_id):
                             self.controlSock.send('250 Requested action okay, completed')
                         else:
                             self.controlSock.send('550 Requested action not taken.')
