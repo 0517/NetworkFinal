@@ -14,7 +14,7 @@ from ip_management import IpListManagement
 import sys
 
 reload(sys)
-sys.setdefaultencoding("utf8")
+sys.setdefaultencoding("utf-8")
 
 
 class DataSocket(threading.Thread):

@@ -39,14 +39,15 @@ $(document).ready(function(){
     });
 
     $('#createButton').on('click', function () {
+
         var $btn = $(this).button('loading');
         var name = $('#create').val();
         client.mkd(name);
-        // business logic...
-//      $btn.button('reset');
+
     });
 
     $('.back').on('click', function(e){
+
         log("back!!");
         e.preventDefault();
         if (client.pwd.length == 1){
@@ -54,6 +55,7 @@ $(document).ready(function(){
         } else {
             client.cwd('..');
         }
+
     })
 
 });
@@ -97,21 +99,16 @@ function log(message) {
     console.log(message);
 }
 
-function DataSocket(type) {
-
-    var _this = this;
-    this.type = type;
-    this.socket = null;
-    this.name = "";
-
-    this.connect = function(ip, port) {
-
+var DataSocketO = {
+    _this: this,
+    type: "",
+    socket: null,
+    connect: function() {
         log('connecting');
         var url = "ws://" + ip + ":" + port + "/";
         this.socket =  new WebSocket(url);
-
+        var _this = this;
         this.socket.onopen = function(event) {
-
             log(event);
             client.isPasv = false;
             if (_this.type == 'NLST') {
@@ -127,9 +124,8 @@ function DataSocket(type) {
         this.socket.onmessage = function(event) {
             _this.onMessage(event);
         };
-
-    };
-    this.onMessage = function(event) {
+    },
+    onMessage : function(event) {
 
         log('data');
         log(event);
@@ -146,12 +142,16 @@ function DataSocket(type) {
             client.data_socket[this.type] = undefined;
 
         }
+    }
 
-    };
 
+};
 
+function DataSocket(type) {
+    var ds = Object.create(DataSocketO);
+    ds.type = type;
+    return ds
 }
-
 
 
 function Client() {
