@@ -14,7 +14,7 @@ class IpListManagement(object):
         if ip_str == '':
             f.close()
             f = open('ip_list.txt', 'w')
-            initial_data = {'len': 0, 'ip_list':[]}
+            initial_data = {'len': 0, 'ip_list': []}
             ip_str = json.dumps(initial_data)
             f.write(ip_str)
             f.close()
