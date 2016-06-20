@@ -143,7 +143,7 @@ class Server(threading.Thread):
                         self.controlSock.send(b'501 Syntax error in parameters or arguments.\r\n')
 
                     else:
-                        if self.username == 'administor' and cmd.split()[1] == 'administor':
+                        if self.username == 'administrator' and cmd.split()[1] == 'administrator':
                             self.if_administrator = True
                         self.controlSock.send(b'230 User logged in, proceed.\r\n')
                         self.authenticated = True
